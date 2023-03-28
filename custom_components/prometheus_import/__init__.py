@@ -22,6 +22,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.info("Called async setup entry from __init__.py")
 
     hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][entry.entry_id] = {} # if we need to store data
 
     # will make sure async_setup_entry from sensor.py is called
     await hass.config_entries.async_forward_entry_setups(entry, [Platform.SENSOR])

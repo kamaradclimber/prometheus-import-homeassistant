@@ -21,8 +21,22 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class SetupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    VERSION = 1
+
     async def async_step_user(self, user_input: Optional[dict[str, Any]] = None):
-        await self.async_set_unique_id("single entry")
-        self._abort_if_unique_id_configured()
-        # will call async_setup_entry defined in __init__.py file
-        return self.async_create_entry(title="prometheus import", data={})
+        if user_input is not None:
+            _LOGGER.warn(f"{user_input}")
+            unique_id = user_input['url']
+            await self.async_set_unique_id(unique_id)
+            self._abort_if_unique_id_configured()
+            # will call async_setup_entry defined in __init__.py file
+            return self.async_create_entry(title="prometheus import", data=user_input)
+
+        return self.async_show_form(
+                step_id="user", data_schema=vol.Schema({
+                    vol.Required("url"): str,
+                    vol.Optional("user"): str,
+                    vol.Optional("password"): str 
+
+                })
+            )
