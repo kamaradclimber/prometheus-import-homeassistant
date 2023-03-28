@@ -1,0 +1,14 @@
+{
+  "codeowners": ["@kamaradclimber"],
+  "requirements": [
+  ],
+  "iot_class": "local_polling",
+  "domain": "prometheus_import",
+  "documentation": "https://github.com/kamaradclimber/prometheus-import",
+  "issue_tracker": "https://github.com/kamaradclimber/prometheus-import/issues",
+  "codeowners": ["@kamaradclimber"],
+  "integration_type": "device",
+  "name": "Prometheus Import",
+  "config_flow": true,
+  "version": "0.1.0"
+}

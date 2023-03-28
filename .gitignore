@@ -1,0 +1,14 @@
+.*cpython-310.pyc
+custom_components/__pycache__/
+custom_components/prometheus_import/__pycache__/
+.HA_VERSION
+.storage/
+automations.yaml
+blueprints/
+configuration.yaml
+home-assistant.log
+home-assistant.log.1
+home-assistant_v2.db
+scenes.yaml
+scripts.yaml
+secrets.yaml
