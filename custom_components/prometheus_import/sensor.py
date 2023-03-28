@@ -84,13 +84,15 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
         config_entry: ConfigEntry,
         hass: HomeAssistant
     ):
+        self.hass = hass
         super().__init__(coordinator)
         self.alert_name = alert_name
         self._attr_name = f"{alert_name} alert"
         self._attr_unique_id = f"{config_entry.entry_id}-{alert_name}"
-        self.hass = hass
-        self._attr_extra_state_attributes: Dict[str, Any] = {}
         _LOGGER.info(f"Creating an alert sensor, named {self.name}")
+
+        self._attr_extra_state_attributes: Dict[str, Any] = {}
+
         self._state = None
 
     @property
@@ -105,6 +107,7 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
                 if rule['name'] == self.alert_name:
                     self._state = rule['state']
                     self._attr_extra_state_attributes = rule['annotations'] # we intentionnally don't store rule object which contains several fields that will vary at each iteration 
+                    self._update_icon()
                     self.async_write_ha_state()
                     found = True
                     break
@@ -113,3 +116,11 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
         _LOGGER.info(f"Finish updating states of {self.alert_name}")
 
 
+    def _update_icon(self):
+        match self._state:
+            case "inactive":
+                self._attr_icon = "mdi:bell-off"
+            case "pending":
+                self._attr_icon = "mdi:bell-badge"
+            case _:
+                self._attr_icon = "mdi:bell-ring"
