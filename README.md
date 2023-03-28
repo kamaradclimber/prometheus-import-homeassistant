@@ -6,12 +6,11 @@ Official integration allows to export metrics from HA to Prometheus, this integr
 
 It can be especially useful to integrate alerts defined in Prometheus.
 
-Composant pour exposer le signal Ecogaz dans un avenir prévisible. Voir https://myecogaz.com/home pour l'accès web.
-
 ## Installation
 
 Use [hacs](https://hacs.xyz/) as a custom repository.
 
 ## Configuration
 
-TODO
+After adding the repository in hacs, add the new integration on /config/integrations page.
+Configure prometheus url.
