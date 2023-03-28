@@ -4,9 +4,7 @@
       "user": {
         "description": "Enter information to connect to prometheus",
         "data": {
-          "url": "Prometheus url",
-          "username": "Username",
-          "password": "Password"
+          "url": "Prometheus url"
         }
       }
     }

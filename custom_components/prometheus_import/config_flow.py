@@ -35,8 +35,6 @@ class SetupConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
                 step_id="user", data_schema=vol.Schema({
                     vol.Required("url"): str,
-                    vol.Optional("user"): str,
-                    vol.Optional("password"): str 
 
                 })
             )
