@@ -61,14 +61,14 @@ class PrometheusAlertCoordinator(DataUpdateCoordinator):
         return alert_names
 
     async def _async_update_data(self):
-        _LOGGER.warn(f"Polling state for {self.name}")
+        _LOGGER.debug(f"Polling state for {self.name}")
         try:
             async with aiohttp.ClientSession() as session:
                 complete_url = self.entry_data['url'] + '/api/v1/rules'
                 async with session.get(complete_url, params={'type': 'alert'}) as response:
-                    _LOGGER.warn(f"Status was {response.status}")
+                    _LOGGER.debug(f"Status was {response.status}")
                     data = await response.json()
-                    _LOGGER.warn(f"response was {data}")
+                    _LOGGER.debug(f"response was {data}")
                     return data['data']
         except Exception as e:
             raise UpdateFailed(f"Generic error when talking to prometheus API: {e}")
@@ -110,6 +110,6 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
                     break
         if not found:
             _LOGGER.warn(f"No status found for {self.alert_name}, keeping current state. Is alert still defined in prometheus?")
-        _LOGGER.warn(f"Finish updating states of {self.alert_name}")
+        _LOGGER.info(f"Finish updating states of {self.alert_name}")
 
 
