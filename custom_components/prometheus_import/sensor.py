@@ -12,7 +12,6 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
-    UpdateFailed,
 )
 
 from .const import (
@@ -29,8 +28,7 @@ async def async_setup_entry(
     _LOGGER.info(f"Called async setup entry for prometheus with url: {entry.data['url']}")
 
 
-    coordinator = PrometheusAlertCoordinator(hass, entry.data)
-    hass.data[DOMAIN][entry.entry_id]['coordinator'] = coordinator
+    coordinator = hass.data[DOMAIN][entry.entry_id]['coordinator']
 
     await coordinator.async_config_entry_first_refresh()
 
@@ -41,38 +39,6 @@ async def async_setup_entry(
 
     async_add_entities(sensors)
     _LOGGER.info("We finished the setup of prometheus_import *entity*")
-
-class PrometheusAlertCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, entry_data):
-        super().__init__(
-                hass,
-                _LOGGER,
-                name=f"Prometheus alert coordinator {entry_data['url']}",
-                update_interval=timedelta(seconds=15),
-                )
-        self.entry_data = entry_data
-
-    def alerts(self):
-        """Assuming we've already queried with success once"""
-        alert_names = []
-        for group in self.data['groups']:
-            for rule in group['rules']:
-                alert_names.append(rule['name'])
-        return alert_names
-
-    async def _async_update_data(self):
-        _LOGGER.debug(f"Polling state for {self.name}")
-        try:
-            async with aiohttp.ClientSession() as session:
-                complete_url = self.entry_data['url'] + '/api/v1/rules'
-                async with session.get(complete_url, params={'type': 'alert'}) as response:
-                    _LOGGER.debug(f"Status was {response.status}")
-                    data = await response.json()
-                    _LOGGER.debug(f"response was {data}")
-                    return data['data']
-        except Exception as e:
-            raise UpdateFailed(f"Generic error when talking to prometheus API: {e}")
-
 
 class PrometheusAlert(CoordinatorEntity, SensorEntity):
     """Representation of an alert in prometheus"""
