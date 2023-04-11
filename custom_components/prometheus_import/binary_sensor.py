@@ -61,13 +61,18 @@ class PrometheusAlertBinarySensor(CoordinatorEntity, BinarySensorEntity):
 
         self._attr_extra_state_attributes: Dict[str, Any] = {}
 
+    def keep(self, rule) -> bool:
+        if "severity" in rule["labels"] and rule["labels"]["severity"] == "none":
+            return False
+        return rule["state"] == "firing"
+
     @callback
     def _handle_coordinator_update(self) -> None:
         any_firing = False
         firing_names = []
         for group in self.coordinator.data["groups"]:
             for rule in group["rules"]:
-                if rule["state"] == "firing":
+                if self.keep(rule):
                     firing_names.append(rule["name"])
                     any_firing = True
                     break
