@@ -9,8 +9,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import callback
 from homeassistant.components.binary_sensor import (
-        BinarySensorEntity,
-        BinarySensorDeviceClass
+    BinarySensorEntity,
+    BinarySensorDeviceClass,
 )
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -24,15 +24,17 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-SCAN_INTERVAL = timedelta(seconds=15) # ideally we would prefer to subscribe to updates
+SCAN_INTERVAL = timedelta(seconds=15)  # ideally we would prefer to subscribe to updates
+
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    _LOGGER.info(f"Called async setup entry for prometheus with url: {entry.data['url']}")
+    _LOGGER.info(
+        f"Called async setup entry for prometheus with url: {entry.data['url']}"
+    )
 
-
-    coordinator = hass.data[DOMAIN][entry.entry_id]['coordinator']
+    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
 
     await coordinator.async_config_entry_first_refresh()
 
@@ -48,7 +50,7 @@ class PrometheusAlertBinarySensor(CoordinatorEntity, BinarySensorEntity):
         self,
         coordinator: DataUpdateCoordinator,
         config_entry: ConfigEntry,
-        hass: HomeAssistant
+        hass: HomeAssistant,
     ):
         self.hass = hass
         super().__init__(coordinator)
@@ -63,10 +65,10 @@ class PrometheusAlertBinarySensor(CoordinatorEntity, BinarySensorEntity):
     def _handle_coordinator_update(self) -> None:
         any_firing = False
         firing_names = []
-        for group in self.coordinator.data['groups']:
-            for rule in group['rules']:
-                if rule['state'] == "firing":
-                    firing_names.append(rule['name'])
+        for group in self.coordinator.data["groups"]:
+            for rule in group["rules"]:
+                if rule["state"] == "firing":
+                    firing_names.append(rule["name"])
                     any_firing = True
                     break
         firing_names.sort()

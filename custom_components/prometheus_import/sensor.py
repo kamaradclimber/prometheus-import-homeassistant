@@ -20,15 +20,17 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-SCAN_INTERVAL = timedelta(seconds=15) # ideally we would prefer to subscribe to updates
+SCAN_INTERVAL = timedelta(seconds=15)  # ideally we would prefer to subscribe to updates
+
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    _LOGGER.info(f"Called async setup entry for prometheus with url: {entry.data['url']}")
+    _LOGGER.info(
+        f"Called async setup entry for prometheus with url: {entry.data['url']}"
+    )
 
-
-    coordinator = hass.data[DOMAIN][entry.entry_id]['coordinator']
+    coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
 
     await coordinator.async_config_entry_first_refresh()
 
@@ -40,6 +42,7 @@ async def async_setup_entry(
     async_add_entities(sensors)
     _LOGGER.info("We finished the setup of prometheus_import *entity*")
 
+
 class PrometheusAlert(CoordinatorEntity, SensorEntity):
     """Representation of an alert in prometheus"""
 
@@ -48,7 +51,7 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
         alert_name: str,
         coordinator: DataUpdateCoordinator,
         config_entry: ConfigEntry,
-        hass: HomeAssistant
+        hass: HomeAssistant,
     ):
         self.hass = hass
         super().__init__(coordinator)
@@ -68,19 +71,22 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         found = False
-        for group in self.coordinator.data['groups']:
-            for rule in group['rules']:
-                if rule['name'] == self.alert_name:
-                    self._state = rule['state']
-                    self._attr_extra_state_attributes = rule['annotations'] # we intentionnally don't store rule object which contains several fields that will vary at each iteration 
+        for group in self.coordinator.data["groups"]:
+            for rule in group["rules"]:
+                if rule["name"] == self.alert_name:
+                    self._state = rule["state"]
+                    self._attr_extra_state_attributes = rule[
+                        "annotations"
+                    ]  # we intentionnally don't store rule object which contains several fields that will vary at each iteration
                     self._update_icon()
                     self.async_write_ha_state()
                     found = True
                     break
         if not found:
-            _LOGGER.warn(f"No status found for {self.alert_name}, keeping current state. Is alert still defined in prometheus?")
+            _LOGGER.warn(
+                f"No status found for {self.alert_name}, keeping current state. Is alert still defined in prometheus?"
+            )
         _LOGGER.info(f"Finish updating states of {self.alert_name}")
-
 
     def _update_icon(self):
         match self._state:
