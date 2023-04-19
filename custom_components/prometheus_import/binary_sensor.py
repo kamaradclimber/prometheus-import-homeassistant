@@ -36,8 +36,6 @@ async def async_setup_entry(
 
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
 
-    await coordinator.async_config_entry_first_refresh()
-
     async_add_entities([PrometheusAlertBinarySensor(coordinator, entry, hass)])
 
     _LOGGER.info("We finished the setup of prometheus_import *entity*")
