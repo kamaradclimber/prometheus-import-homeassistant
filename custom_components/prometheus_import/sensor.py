@@ -86,7 +86,7 @@ class PrometheusAlert(CoordinatorEntity, SensorEntity):
             _LOGGER.warn(
                 f"No status found for {self.alert_name}, keeping current state. Is alert still defined in prometheus?"
             )
-        _LOGGER.info(f"Finish updating states of {self.alert_name}")
+        _LOGGER.debug(f"Finish updating states of {self.alert_name}")
 
     def _update_icon(self):
         match self._state:
