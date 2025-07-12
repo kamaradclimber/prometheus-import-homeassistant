@@ -6,6 +6,8 @@ Official integration allows to export metrics from HA to Prometheus, this integr
 
 It can be especially useful to integrate alerts defined in Prometheus.
 
+⚠️ I am no longer using this integration for myself and would be happy to transfer ownership if someone is interested. Open an issue!
+
 ## Installation
 
 Use [hacs](https://hacs.xyz/) as a custom repository.
