@@ -13,5 +13,5 @@
   "integration_type": "device",
   "name": "Prometheus Import",
   "config_flow": true,
-  "version": "0.3.3"
+  "version": "0.3.4"
 }
